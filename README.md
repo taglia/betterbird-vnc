@@ -95,6 +95,7 @@ Use any VNC client like:
 |----------|---------|-------------|
 | `PUID` | `1000` | User ID for file permissions (set to match host user) |
 | `PGID` | `1000` | Group ID for file permissions (set to match host user) |
+| `BETTERBIRD_PROFILE` | `/home/betterbird/.thunderbird` | BetterBird profile directory path |
 | `VNC_PASSWORD` | `betterbird` | Password for VNC access |
 | `VNC_RESOLUTION` | `1280x720` | Screen resolution (e.g., 1920x1080) |
 | `TZ` | `UTC` | Timezone (e.g., America/New_York, Europe/London) |
@@ -145,11 +146,37 @@ echo "PGID=$(id -g)" >> .env
 docker-compose up -d
 ```
 
+### Custom Profile Directory
+
+You can specify a custom location for the BetterBird profile:
+
+**Using environment variable:**
+```yaml
+environment:
+  - BETTERBIRD_PROFILE=/custom/path/to/profile
+volumes:
+  - /host/path/to/profile:/custom/path/to/profile
+```
+
+**Example: Using a host directory directly:**
+```yaml
+environment:
+  - BETTERBIRD_PROFILE=/data/betterbird
+volumes:
+  - /home/myuser/betterbird-profile:/data/betterbird
+  - /home/myuser/Downloads:/home/betterbird/Downloads
+```
+
+This is useful when you want to:
+- Use an existing profile from another machine
+- Back up your profile to a specific location
+- Share profile across multiple containers (not recommended while running)
+
 ## Data Persistence
 
 Two volumes are used for persistent data:
 
-- **BetterBird Profile**: `/home/betterbird/.thunderbird`
+- **BetterBird Profile**: `/home/betterbird/.thunderbird` (configurable via `BETTERBIRD_PROFILE`)
   - Contains all email accounts, settings, and local mail
 - **Downloads**: `/home/betterbird/Downloads`
   - Email attachments and downloaded files

@@ -52,6 +52,7 @@ Then open **http://localhost:6080** in your browser!
 |----------|---------|-------------|
 | `PUID` | `1000` | User ID for file permissions |
 | `PGID` | `1000` | Group ID for file permissions |
+| `BETTERBIRD_PROFILE` | `/home/betterbird/.thunderbird` | Profile directory path |
 | `VNC_PASSWORD` | `betterbird` | VNC access password |
 | `VNC_RESOLUTION` | `1280x720` | Screen resolution |
 | `TZ` | `UTC` | Timezone (e.g., America/New_York) |
@@ -115,7 +116,15 @@ docker-compose up -d
 ### Email Profile
 Your BetterBird profile (accounts, settings, local mail) is stored in:
 - **Volume:** `betterbird-profile`
-- **Path:** `/home/betterbird/.thunderbird`
+- **Path:** `/home/betterbird/.thunderbird` (configurable via `BETTERBIRD_PROFILE`)
+
+**Custom profile location:**
+```bash
+docker run -d \
+  -e BETTERBIRD_PROFILE=/data/profile \
+  -v /host/path:/data/profile \
+  tagliasteel/betterbird-vnc:latest
+```
 
 ### Downloads
 Email attachments and downloads are stored in:

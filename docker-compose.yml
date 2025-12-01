@@ -17,6 +17,7 @@ services:
       - PGID=1000  # Group ID (change to match your host user)
       - VNC_PASSWORD=betterbird
       - VNC_RESOLUTION=1280x720
+      - BETTERBIRD_PROFILE=/home/betterbird/.thunderbird  # Profile directory path
       - TZ=UTC
       - DISPLAY=:0
     volumes:
@@ -24,6 +25,8 @@ services:
       - betterbird-profile:/home/betterbird/.thunderbird
       # Persistent downloads
       - betterbird-downloads:/home/betterbird/Downloads
+      # Alternative: Mount a specific host directory for profile
+      # - /path/on/host/betterbird-profile:/home/betterbird/.thunderbird
     restart: unless-stopped
     shm_size: "2gb" # Increased shared memory for browser-like applications
     security_opt:

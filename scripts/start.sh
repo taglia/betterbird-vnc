@@ -52,18 +52,23 @@ if [ ! -z "$VNC_PASSWORD" ]; then
     chmod 600 /home/betterbird/.vnc/passwd
 fi
 
+# Set default profile directory if not specified
+BETTERBIRD_PROFILE=${BETTERBIRD_PROFILE:-/home/betterbird/.thunderbird}
+
 # Print configuration
 echo "Configuration:"
 echo "  Display: $DISPLAY"
 echo "  VNC Port: $VNC_PORT"
 echo "  noVNC Port: $NOVNC_PORT"
 echo "  Resolution: $VNC_RESOLUTION"
+echo "  Profile Directory: $BETTERBIRD_PROFILE"
 echo "  Timezone: $TZ"
 echo "======================================="
 
 # Ensure proper permissions
-mkdir -p /home/betterbird/.thunderbird /home/betterbird/Downloads
-chmod 755 /home/betterbird/.thunderbird /home/betterbird/Downloads
+mkdir -p "$BETTERBIRD_PROFILE" /home/betterbird/Downloads
+chmod 755 "$BETTERBIRD_PROFILE" /home/betterbird/Downloads
+chown -R betterbird:betterbird "$BETTERBIRD_PROFILE" /home/betterbird/Downloads
 
 # Create X11 socket directory (fixes Xvfb warning)
 mkdir -p /tmp/.X11-unix

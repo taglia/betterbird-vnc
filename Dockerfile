@@ -12,6 +12,7 @@ ENV DISPLAY=:0 \
     NOVNC_PORT=6080 \
     VNC_RESOLUTION=1280x720 \
     VNC_PASSWORD=betterbird \
+    BETTERBIRD_PROFILE=/home/betterbird/.thunderbird \
     TZ=UTC
 
 # Install dependencies
