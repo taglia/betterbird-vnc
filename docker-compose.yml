@@ -1,0 +1,36 @@
+services:
+  betterbird:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BETTERBIRD_VERSION: 140.5.0esr-bb14
+        USER_UID: 1000
+        USER_GID: 1000
+    image: betterbird-vnc:latest
+    container_name: betterbird
+    ports:
+      - "6080:6080" # noVNC web interface
+      - "5900:5900" # VNC port
+    environment:
+      - VNC_PASSWORD=betterbird
+      - VNC_RESOLUTION=1280x720
+      - TZ=UTC
+      - DISPLAY=:0
+    volumes:
+      # Persistent Thunderbird profile data
+      - betterbird-profile:/home/betterbird/.thunderbird
+      # Persistent downloads
+      - betterbird-downloads:/home/betterbird/Downloads
+    restart: unless-stopped
+    shm_size: "2gb" # Increased shared memory for browser-like applications
+    security_opt:
+      - seccomp:unconfined # Required for some GUI applications
+    cap_add:
+      - SYS_ADMIN # May be needed for some features
+
+volumes:
+  betterbird-profile:
+    driver: local
+  betterbird-downloads:
+    driver: local

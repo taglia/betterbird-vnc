@@ -1,0 +1,42 @@
+MIT License
+
+Copyright (c) 2025 BetterBird Docker Project
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+THIRD-PARTY SOFTWARE NOTICES
+
+This Docker image packages the following third-party software components,
+each under its own license:
+
+- BetterBird: Mozilla Public License 2.0 (https://www.betterbird.eu/)
+- noVNC: Mozilla Public License 2.0 (https://github.com/novnc/noVNC)
+- TigerVNC: GNU General Public License v2.0 (https://tigervnc.org/)
+- Fluxbox: MIT License (https://github.com/fluxbox/fluxbox)
+- Debian packages: Various DFSG-compliant licenses
+
+See THIRD-PARTY-LICENSES.md for complete license texts and attributions.
+
+The MIT License above applies solely to the Docker configuration files,
+scripts, and documentation created for this project (Dockerfile, 
+docker-compose.yml, shell scripts, and markdown documentation). It does
+not apply to the packaged third-party software components, which retain
+their original licenses.

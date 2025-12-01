@@ -1,0 +1,82 @@
+# Docker
+.dockerignore
+
+# Git
+.git/
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Backup files
+*.bak
+*~
+
+# Build artifacts
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.zip
+
+# Docker volumes (if accidentally created locally)
+volumes/
+data/
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+secrets/
+*.key
+*.pem
+*.crt
+
+# Sensitive configuration
+config.local.yml
+credentials.json
+
+# Test data
+test-data/
+*.test
+
+# Node modules (if using any Node.js tools)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Python virtual environments (if using Python tools)
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Docker credentials (just in case)
+.docker/config.json
+
+# GitHub CLI authentication
+.gh/
+
+# Security scanning results
+trivy-results.json
+scan-results/
+
+# Personal notes (not for public repo)
+NOTES.md
+TODO.txt
+.personal/
