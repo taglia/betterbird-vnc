@@ -113,8 +113,7 @@ VOLUME ["/home/betterbird/.thunderbird", "/home/betterbird/Downloads"]
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD curl -f http://localhost:${NOVNC_PORT}/ || exit 1
 
-# Switch to user and start
-USER betterbird
+# Start as root (entrypoint will handle switching to betterbird user)
 WORKDIR /home/betterbird
 
 ENTRYPOINT ["/usr/local/bin/start.sh"]

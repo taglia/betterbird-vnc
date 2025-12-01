@@ -65,6 +65,11 @@ echo "======================================="
 mkdir -p /home/betterbird/.thunderbird /home/betterbird/Downloads
 chmod 755 /home/betterbird/.thunderbird /home/betterbird/Downloads
 
+# Create X11 socket directory (fixes Xvfb warning)
+mkdir -p /tmp/.X11-unix
+chmod 1777 /tmp/.X11-unix
+chown root:root /tmp/.X11-unix
+
 # Start D-Bus session bus
 if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
     echo "Starting D-Bus session..."
@@ -83,5 +88,5 @@ echo "  noVNC (web browser): http://localhost:$NOVNC_PORT"
 echo "  VNC client: localhost:$VNC_PORT"
 echo "======================================="
 
-# Start supervisord (it will manage all processes)
+# Start supervisord as root (it will drop to betterbird user per config)
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
