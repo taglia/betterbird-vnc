@@ -22,6 +22,8 @@ docker run -d \
   -p 6080:6080 \
   -v betterbird-profile:/home/betterbird/.thunderbird \
   -v betterbird-downloads:/home/betterbird/Downloads \
+  -e PUID=1000 \
+  -e PGID=1000 \
   -e VNC_PASSWORD=your-secure-password \
   -e VNC_RESOLUTION=1920x1080 \
   -e TZ=America/New_York \

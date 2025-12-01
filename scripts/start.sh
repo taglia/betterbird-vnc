@@ -4,6 +4,40 @@ set -e
 echo "Starting BetterBird Docker Container..."
 echo "======================================="
 
+# Handle UID/GID changes at runtime
+PUID=${PUID:-1000}
+PGID=${PGID:-1000}
+
+echo "User Configuration:"
+echo "  PUID: $PUID"
+echo "  PGID: $PGID"
+
+# Get current UID/GID of betterbird user
+CURRENT_UID=$(id -u betterbird)
+CURRENT_GID=$(id -g betterbird)
+
+# Change UID/GID if different from current
+if [ "$PUID" != "$CURRENT_UID" ] || [ "$PGID" != "$CURRENT_GID" ]; then
+    echo "Updating betterbird user UID:GID from $CURRENT_UID:$CURRENT_GID to $PUID:$PGID..."
+    
+    # Change group ID
+    groupmod -o -g "$PGID" betterbird
+    
+    # Change user ID
+    usermod -o -u "$PUID" betterbird
+    
+    # Update ownership of home directory and important paths
+    echo "Updating file ownership (this may take a moment)..."
+    chown -R betterbird:betterbird /home/betterbird
+    chown -R betterbird:betterbird /opt/noVNC
+    
+    echo "UID/GID update complete!"
+else
+    echo "UID/GID already correct, no changes needed."
+fi
+
+echo "======================================="
+
 # Set timezone
 if [ ! -z "$TZ" ]; then
     echo "Setting timezone to $TZ"

@@ -11,6 +11,8 @@ docker run -d \
   -p 5900:5900 \
   -v betterbird-profile:/home/betterbird/.thunderbird \
   -v betterbird-downloads:/home/betterbird/Downloads \
+  -e PUID=1000 \
+  -e PGID=1000 \
   -e VNC_PASSWORD=betterbird \
   --shm-size 2g \
   tagliasteel/betterbird-vnc:latest
@@ -48,6 +50,8 @@ Then open **http://localhost:6080** in your browser!
 
 | Variable | Default | Description |
 |----------|---------|-------------|
+| `PUID` | `1000` | User ID for file permissions |
+| `PGID` | `1000` | Group ID for file permissions |
 | `VNC_PASSWORD` | `betterbird` | VNC access password |
 | `VNC_RESOLUTION` | `1280x720` | Screen resolution |
 | `TZ` | `UTC` | Timezone (e.g., America/New_York) |
@@ -61,6 +65,8 @@ docker run -d \
   -p 5900:5900 \
   -v betterbird-profile:/home/betterbird/.thunderbird \
   -v betterbird-downloads:/home/betterbird/Downloads \
+  -e PUID=1000 \
+  -e PGID=1000 \
   -e VNC_PASSWORD=my-secure-password \
   -e VNC_RESOLUTION=1920x1080 \
   -e TZ=America/New_York \
@@ -83,6 +89,8 @@ services:
       - "6080:6080"  # noVNC web interface
       - "5900:5900"  # VNC port
     environment:
+      - PUID=1000
+      - PGID=1000
       - VNC_PASSWORD=betterbird
       - VNC_RESOLUTION=1280x720
       - TZ=UTC

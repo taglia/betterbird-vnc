@@ -43,6 +43,8 @@ docker run -d \
   -p 5900:5900 \
   -v betterbird-profile:/home/betterbird/.thunderbird \
   -v betterbird-downloads:/home/betterbird/Downloads \
+  -e PUID=1000 \
+  -e PGID=1000 \
   -e VNC_PASSWORD=betterbird \
   -e VNC_RESOLUTION=1280x720 \
   -e TZ=UTC \
@@ -58,11 +60,13 @@ docker run -d \
   -p 5900:5900 \
   -v betterbird-profile:/home/betterbird/.thunderbird \
   -v betterbird-downloads:/home/betterbird/Downloads \
+  -e PUID=1000 \
+  -e PGID=1000 \
   -e VNC_PASSWORD=betterbird \
   -e VNC_RESOLUTION=1280x720 \
   -e TZ=UTC \
   --shm-size 2g \
-  ghcr.io/tagliasteel/betterbird-vnc:latest
+  ghcr.io/taglia/betterbird-vnc:latest
 ```
 
 ## Access Methods
@@ -89,6 +93,8 @@ Use any VNC client like:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
+| `PUID` | `1000` | User ID for file permissions (set to match host user) |
+| `PGID` | `1000` | Group ID for file permissions (set to match host user) |
 | `VNC_PASSWORD` | `betterbird` | Password for VNC access |
 | `VNC_RESOLUTION` | `1280x720` | Screen resolution (e.g., 1920x1080) |
 | `TZ` | `UTC` | Timezone (e.g., America/New_York, Europe/London) |
@@ -110,9 +116,33 @@ Edit `docker-compose.yml` to change environment variables:
 
 ```yaml
 environment:
+  - PUID=1000  # Change to your user ID
+  - PGID=1000  # Change to your group ID
   - VNC_PASSWORD=my-secure-password
   - VNC_RESOLUTION=1920x1080
   - TZ=America/New_York
+```
+
+**Matching your host user's UID/GID** (recommended for proper file permissions):
+
+```bash
+# Find your UID/GID
+id
+
+# Output example: uid=1000(username) gid=1000(username)
+# Use these values for PUID and PGID in docker-compose.yml
+```
+
+**Or set at runtime without editing files:**
+
+```bash
+# Using environment variables
+PUID=$(id -u) PGID=$(id -g) docker-compose up -d
+
+# Or create a .env file
+echo "PUID=$(id -u)" > .env
+echo "PGID=$(id -g)" >> .env
+docker-compose up -d
 ```
 
 ## Data Persistence

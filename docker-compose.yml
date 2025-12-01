@@ -13,6 +13,8 @@ services:
       - "6080:6080" # noVNC web interface
       - "5900:5900" # VNC port
     environment:
+      - PUID=1000  # User ID (change to match your host user)
+      - PGID=1000  # Group ID (change to match your host user)
       - VNC_PASSWORD=betterbird
       - VNC_RESOLUTION=1280x720
       - TZ=UTC
