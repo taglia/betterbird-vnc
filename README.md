@@ -36,6 +36,7 @@ docker-compose up -d
 ### Using Docker Run
 
 **From Docker Hub:**
+
 ```bash
 docker run -d \
   --name betterbird \
@@ -53,6 +54,7 @@ docker run -d \
 ```
 
 **From GitHub Container Registry:**
+
 ```bash
 docker run -d \
   --name betterbird \
@@ -72,16 +74,19 @@ docker run -d \
 ## Access Methods
 
 ### Web Browser (noVNC)
+
 - URL: `http://localhost:6080`
 - No client installation required
 - Works on any device with a modern web browser
 
 ### VNC Client
+
 - Host: `localhost`
 - Port: `5900`
 - Password: `betterbird` (or your configured password)
 
 Use any VNC client like:
+
 - TigerVNC Viewer
 - RealVNC
 - TightVNC
@@ -151,6 +156,7 @@ docker-compose up -d
 You can specify a custom location for the BetterBird profile:
 
 **Using environment variable:**
+
 ```yaml
 environment:
   - BETTERBIRD_PROFILE=/custom/path/to/profile
@@ -159,6 +165,7 @@ volumes:
 ```
 
 **Example: Using a host directory directly:**
+
 ```yaml
 environment:
   - BETTERBIRD_PROFILE=/data/betterbird
@@ -168,6 +175,7 @@ volumes:
 ```
 
 This is useful when you want to:
+
 - Use an existing profile from another machine
 - Back up your profile to a specific location
 - Share profile across multiple containers (not recommended while running)
@@ -225,6 +233,7 @@ docker build \
 The build script supports publishing to multiple registries.
 
 **Build only (no publishing):**
+
 ```bash
 scripts/build-and-publish.sh --build \
   --docker-username tagliasteel \
@@ -232,6 +241,7 @@ scripts/build-and-publish.sh --build \
 ```
 
 **Build and publish to both registries:**
+
 ```bash
 scripts/build-and-publish.sh --build-and-publish \
   --docker-username tagliasteel \
@@ -239,6 +249,7 @@ scripts/build-and-publish.sh --build-and-publish \
 ```
 
 **Publish to specific registry only:**
+
 ```bash
 # GitHub Container Registry only
 scripts/build-and-publish.sh --build-and-publish \
@@ -252,6 +263,7 @@ scripts/build-and-publish.sh --build-and-publish \
 ```
 
 **Using environment variables:**
+
 ```bash
 export DOCKER_USERNAME=tagliasteel
 export GITHUB_USERNAME=taglia
@@ -291,6 +303,7 @@ scripts/build-and-publish.sh --build-and-publish \
 ```
 
 The script will:
+
 1. Build the image with the version from `VERSION` file
 2. Tag it with both the version number and `latest`
 3. Push both tags to Docker Hub and GitHub Container Registry
@@ -302,11 +315,13 @@ The script will:
 #### One-Time Setup
 
 **Docker Hub:**
+
 ```bash
 docker login
 ```
 
 **GitHub Container Registry:**
+
 ```bash
 echo $GITHUB_TOKEN | docker login ghcr.io -u taglia --password-stdin
 ```
@@ -314,11 +329,13 @@ echo $GITHUB_TOKEN | docker login ghcr.io -u taglia --password-stdin
 #### Publishing Process
 
 1. **Update BetterBird version**:
+
    ```bash
    scripts/update-betterbird.sh
    ```
 
 2. **Build the image**:
+
    ```bash
    scripts/build-and-publish.sh --build \
      --docker-username tagliasteel \
@@ -326,12 +343,14 @@ echo $GITHUB_TOKEN | docker login ghcr.io -u taglia --password-stdin
    ```
 
 3. **Test the image locally**:
+
    ```bash
    docker-compose up -d
    # Access http://localhost:6080 and verify it works
    ```
 
 4. **Publish to registries**:
+
    ```bash
    scripts/build-and-publish.sh --publish \
      --docker-username tagliasteel \
@@ -339,6 +358,7 @@ echo $GITHUB_TOKEN | docker login ghcr.io -u taglia --password-stdin
    ```
 
 Or do it all at once:
+
 ```bash
 scripts/update-betterbird.sh
 scripts/build-and-publish.sh --build-and-publish \
@@ -346,35 +366,12 @@ scripts/build-and-publish.sh --build-and-publish \
   --github-username taglia
 ```
 
-### Automated Publishing with GitHub Actions
-
-This repository includes a GitHub Actions workflow for automated builds and publishing.
-
-**Features:**
-- ✅ Automatic builds on push to main
-- ✅ Publishes to both Docker Hub and GHCR
-- ✅ Weekly checks for BetterBird updates
-- ✅ Automatic Docker Hub README sync
-- ✅ Creates PRs for version updates
-
-**Setup:**
-1. See [.github/SETUP.md](.github/SETUP.md) for detailed instructions
-2. Add required secrets to your GitHub repository:
-   - `DOCKER_HUB_USERNAME`
-   - `DOCKER_HUB_TOKEN`
-3. Push to main branch or create a tag to trigger a build
-
-**Triggers:**
-- Push to `main` branch
-- Git tags (e.g., `v1.0.0`)
-- Manual dispatch from Actions tab
-- Weekly schedule (Sundays at 2 AM UTC) - checks for updates
-
 ## Troubleshooting
 
 ### Container Won't Start
 
 Check logs:
+
 ```bash
 docker-compose logs -f
 ```
@@ -382,16 +379,19 @@ docker-compose logs -f
 ### Can't Connect to noVNC
 
 1. Ensure port 6080 is not in use:
+
    ```bash
    netstat -an | grep 6080
    ```
 
 2. Check container is running:
+
    ```bash
    docker ps | grep betterbird
    ```
 
 3. Verify port mapping:
+
    ```bash
    docker port betterbird
    ```
@@ -399,11 +399,13 @@ docker-compose logs -f
 ### Black Screen or Display Issues
 
 1. Check if Xvfb is running:
+
    ```bash
    docker exec betterbird ps aux | grep Xvfb
    ```
 
 2. Restart the container:
+
    ```bash
    docker-compose restart
    ```
@@ -411,11 +413,13 @@ docker-compose logs -f
 ### BetterBird Won't Start
 
 1. Check shared memory size (increase if needed):
+
    ```yaml
    shm_size: '4gb'
    ```
 
 2. Check logs:
+
    ```bash
    docker-compose logs betterbird
    ```
@@ -435,6 +439,7 @@ docker-compose up -d
 ### Custom BetterBird Version
 
 Edit `docker-compose.yml`:
+
 ```yaml
 build:
   args:
@@ -492,6 +497,7 @@ Choose ONE of these secure access methods:
 #### Option 1: Reverse Proxy with HTTPS (Recommended for Web Access)
 
 **Using Caddy (Automatic HTTPS):**
+
 ```caddy
 betterbird.yourdomain.com {
     reverse_proxy localhost:6080
@@ -499,6 +505,7 @@ betterbird.yourdomain.com {
 ```
 
 **Using nginx with Let's Encrypt:**
+
 ```nginx
 server {
     listen 443 ssl http2;
@@ -521,6 +528,7 @@ server {
 ```
 
 **Using Traefik:**
+
 ```yaml
 services:
   betterbird:
@@ -538,12 +546,14 @@ services:
 [Tailscale](https://tailscale.com/) provides zero-configuration VPN access.
 
 1. **Install Tailscale on your server:**
+
    ```bash
    curl -fsSL https://tailscale.com/install.sh | sh
    sudo tailscale up
    ```
 
 2. **Access BetterBird via Tailscale IP:**
+
    ```
    http://100.x.x.x:6080
    ```
@@ -559,12 +569,14 @@ services:
 [Cloudflare Tunnel](https://www.cloudflare.com/products/tunnel/) provides secure access without opening ports.
 
 1. **Install cloudflared:**
+
    ```bash
    wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
    sudo dpkg -i cloudflared-linux-amd64.deb
    ```
 
 2. **Create tunnel:**
+
    ```bash
    cloudflared tunnel login
    cloudflared tunnel create betterbird
@@ -572,6 +584,7 @@ services:
    ```
 
 3. **Configure tunnel (config.yml):**
+
    ```yaml
    tunnel: <tunnel-id>
    credentials-file: /root/.cloudflared/<tunnel-id>.json
@@ -583,6 +596,7 @@ services:
    ```
 
 4. **Run tunnel:**
+
    ```bash
    cloudflared tunnel run betterbird
    ```
@@ -596,6 +610,7 @@ services:
 #### Option 4: Local Network Only
 
 **Safest option for home use:**
+
 - Only access via `http://localhost:6080` or `http://192.168.x.x:6080`
 - No external access
 - Use VPN (like Tailscale) when away from home
@@ -671,6 +686,7 @@ If you discover a security vulnerability, please **DO NOT** open a public issue.
 The Docker configuration files, scripts, and documentation in this repository are licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
 
 This includes:
+
 - Dockerfile
 - docker-compose.yml
 - Shell scripts (start.sh, build-and-publish.sh, update-betterbird.sh)
@@ -694,12 +710,12 @@ See [THIRD-PARTY-LICENSES.md](THIRD-PARTY-LICENSES.md) for complete license info
 
 As required by the licenses of included software, source code is freely available:
 
-- **BetterBird source**: https://github.com/Betterbird/thunderbird-patches
-- **BetterBird releases**: https://www.betterbird.eu/downloads/
-- **noVNC source**: https://github.com/novnc/noVNC
-- **TigerVNC source**: https://github.com/TigerVNC/tigervnc
-- **Fluxbox source**: https://github.com/fluxbox/fluxbox
-- **Debian sources**: https://www.debian.org/distrib/packages
+- **BetterBird source**: <https://github.com/Betterbird/thunderbird-patches>
+- **BetterBird releases**: <https://www.betterbird.eu/downloads/>
+- **noVNC source**: <https://github.com/novnc/noVNC>
+- **TigerVNC source**: <https://github.com/TigerVNC/tigervnc>
+- **Fluxbox source**: <https://github.com/fluxbox/fluxbox>
+- **Debian sources**: <https://www.debian.org/distrib/packages>
 
 All packaged software is used in unmodified form from official sources.
 
