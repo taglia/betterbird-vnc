@@ -18,7 +18,7 @@ docker run -d \
   tagliasteel/betterbird-vnc:latest
 ```
 
-Then open **http://localhost:6080** in your browser!
+Then open **<http://localhost:6080>** in your browser!
 
 ## What is BetterBird?
 
@@ -35,11 +35,13 @@ Then open **http://localhost:6080** in your browser!
 ## Access Methods
 
 ### Web Browser (noVNC) - Recommended
+
 - Open `http://localhost:6080` in any modern browser
 - No VNC client installation needed
 - Works on any device
 
 ### VNC Client
+
 - Connect to `localhost:5900`
 - Default password: `betterbird`
 - Use any VNC client (TigerVNC, RealVNC, etc.)
@@ -107,6 +109,7 @@ volumes:
 ```
 
 Start with:
+
 ```bash
 docker-compose up -d
 ```
@@ -114,11 +117,14 @@ docker-compose up -d
 ## Data Persistence
 
 ### Email Profile
+
 Your BetterBird profile (accounts, settings, local mail) is stored in:
+
 - **Volume:** `betterbird-profile`
 - **Path:** `/home/betterbird/.thunderbird` (configurable via `BETTERBIRD_PROFILE`)
 
 **Custom profile location:**
+
 ```bash
 docker run -d \
   -e BETTERBIRD_PROFILE=/data/profile \
@@ -127,7 +133,9 @@ docker run -d \
 ```
 
 ### Downloads
+
 Email attachments and downloads are stored in:
+
 - **Volume:** `betterbird-downloads`
 - **Path:** `/home/betterbird/Downloads`
 
@@ -178,17 +186,20 @@ docker run --rm \
 ### Secure Access Options
 
 **For External Access:**
+
 - Use a reverse proxy with HTTPS (Caddy, nginx, Traefik)
 - Use Tailscale VPN for encrypted peer-to-peer access
 - Use Cloudflare Tunnel for zero-trust access
 
 **For Home/Local Use:**
+
 - Access only via local network (192.168.x.x:6080)
 - Use VPN when accessing remotely
 
 ### Reverse Proxy Examples
 
 **Caddy (Automatic HTTPS):**
+
 ```caddy
 betterbird.yourdomain.com {
     reverse_proxy localhost:6080
@@ -196,6 +207,7 @@ betterbird.yourdomain.com {
 ```
 
 **nginx with HTTPS:**
+
 ```nginx
 server {
     listen 443 ssl http2;
@@ -218,28 +230,32 @@ server {
 ## Troubleshooting
 
 ### Container restarts repeatedly
+
 - Check logs: `docker logs betterbird`
 - Ensure sufficient shared memory: `--shm-size 2g`
 
 ### Black screen in noVNC
+
 - Wait 10-15 seconds for services to start
 - Refresh the browser
 - Check logs: `docker logs betterbird`
 
 ### Can't connect to VNC
+
 - Verify port mapping: `docker port betterbird`
 - Check firewall settings
 - Ensure VNC port 5900 is not already in use
 
 ### Performance issues
+
 - Increase shared memory: `--shm-size 4g`
 - Allocate more CPU/RAM to Docker
 
 ## Source Code & Issues
 
-- **GitHub:** https://github.com/taglia/docker-betterbird
-- **Issues:** https://github.com/taglia/docker-betterbird/issues
-- **BetterBird:** https://www.betterbird.eu/
+- **GitHub:** <https://github.com/taglia/betterbird-vnc>
+- **Issues:** <https://github.com/taglia/betterbird-vnc/issues>
+- **BetterBird:** <https://www.betterbird.eu/>
 
 ## License & Attribution
 
@@ -247,7 +263,7 @@ server {
 
 **Docker files and scripts**: MIT License
 
-See the [GitHub repository](https://github.com/taglia/docker-betterbird) for complete source code and documentation.
+See the [GitHub repository](https://github.com/taglia/betterbird-vnc) for complete source code and documentation.
 
 ### Packaged Software
 
@@ -264,18 +280,20 @@ This Docker image includes third-party software components, each under its own o
 ### Source Code Availability
 
 Source code for all components is freely available:
-- **BetterBird**: https://www.betterbird.eu/downloads/ and https://github.com/Betterbird/thunderbird-patches
-- **noVNC**: https://github.com/novnc/noVNC
-- **TigerVNC**: https://github.com/TigerVNC/tigervnc
-- **Fluxbox**: https://github.com/fluxbox/fluxbox
-- **Debian**: https://www.debian.org/distrib/packages
 
-All packaged software is used in unmodified form. For complete license information, see [THIRD-PARTY-LICENSES.md](https://github.com/taglia/docker-betterbird/blob/main/THIRD-PARTY-LICENSES.md) in the source repository.
+- **BetterBird**: <https://www.betterbird.eu/downloads/> and <https://github.com/Betterbird/thunderbird-patches>
+- **noVNC**: <https://github.com/novnc/noVNC>
+- **TigerVNC**: <https://github.com/TigerVNC/tigervnc>
+- **Fluxbox**: <https://github.com/fluxbox/fluxbox>
+- **Debian**: <https://www.debian.org/distrib/packages>
+
+All packaged software is used in unmodified form. For complete license information, see [THIRD-PARTY-LICENSES.md](https://github.com/taglia/betterbird-vnc/blob/main/THIRD-PARTY-LICENSES.md) in the source repository.
 
 ## Support
 
 If you find this image useful, please ⭐ star the repository!
 
 For issues or questions:
-- Open an issue on [GitHub](https://github.com/taglia/docker-betterbird/issues)
-- Check BetterBird documentation: https://www.betterbird.eu/support/
+
+- Open an issue on [GitHub](https://github.com/taglia/betterbird-vnc/issues)
+- Check BetterBird documentation: <https://www.betterbird.eu/support/>

@@ -36,6 +36,7 @@ docker run -d \
 ## Step 3: Access BetterBird
 
 Open your browser and go to:
+
 ```
 http://localhost:6080
 ```
@@ -52,32 +53,39 @@ That's it! You should see BetterBird running in your browser.
 ## Using Docker Compose
 
 1. **Download docker-compose.yml:**
+
    ```bash
-   curl -O https://raw.githubusercontent.com/taglia/docker-betterbird/main/docker-compose.yml
+   curl -O https://raw.githubusercontent.com/taglia/betterbird-vnc/main/docker-compose.yml
    ```
 
 2. **Edit the file** to set your password and timezone
 
 3. **Start the container:**
+
    ```bash
    docker compose up -d
    ```
 
-4. **Access:** http://localhost:6080
+4. **Access:** <http://localhost:6080>
 
 ## Troubleshooting
 
 ### Black screen?
+
 Wait 10-15 seconds for services to start, then refresh.
 
 ### Can't connect?
+
 Check that port 6080 isn't already in use:
+
 ```bash
 netstat -an | grep 6080
 ```
 
 ### Container keeps restarting?
+
 Check the logs:
+
 ```bash
 docker logs betterbird
 ```

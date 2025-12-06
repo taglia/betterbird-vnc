@@ -3,7 +3,7 @@
 Run [BetterBird](https://www.betterbird.eu/) email client in a Docker container with web-based VNC access via noVNC. Access your email client through your web browser without installing anything locally!
 
 [![Docker Hub](https://img.shields.io/docker/v/tagliasteel/betterbird-vnc?label=Docker%20Hub&logo=docker)](https://hub.docker.com/r/tagliasteel/betterbird-vnc)
-[![GitHub Container Registry](https://img.shields.io/badge/ghcr.io-betterbird--vnc-blue?logo=github)](https://ghcr.io/tagliasteel/betterbird-vnc)
+[![GitHub Container Registry](https://img.shields.io/badge/ghcr.io-betterbird--vnc-blue?logo=github)](https://ghcr.io/taglia/betterbird-vnc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > 🚀 **New here?** Check out the [Quick Start Guide](QUICKSTART.md) to get running in 3 minutes!
@@ -24,7 +24,7 @@ Run [BetterBird](https://www.betterbird.eu/) email client in a Docker container 
 
 ```bash
 # Clone or download this repository
-cd docker-betterbird
+cd betterbird-vnc
 
 # Start the container
 docker-compose up -d
