@@ -93,6 +93,9 @@ jobs:
   check-updates:
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule'
+    permissions:
+      contents: write
+      pull-requests: write
     
     steps:
       - name: Checkout repository
