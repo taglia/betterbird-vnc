@@ -97,16 +97,16 @@ COPY --chown=betterbird:betterbird scripts/supervisord.conf /etc/supervisor/conf
 COPY --chown=betterbird:betterbird scripts/start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
+# Copy desktop entries for applications (as root)
+COPY scripts/betterbird.desktop /usr/share/applications/betterbird.desktop
+COPY scripts/firefox-esr.desktop /usr/share/applications/firefox-esr.desktop
+RUN update-desktop-database /usr/share/applications || true
+
 # Create VNC password file
 USER betterbird
 RUN mkdir -p /home/betterbird/.vnc && \
     echo "${VNC_PASSWORD}" | vncpasswd -f > /home/betterbird/.vnc/passwd && \
     chmod 600 /home/betterbird/.vnc/passwd
-
-# Copy desktop entries for applications
-COPY scripts/betterbird.desktop /usr/share/applications/betterbird.desktop
-COPY scripts/firefox-esr.desktop /usr/share/applications/firefox-esr.desktop
-RUN update-desktop-database /usr/share/applications
 
 # Configure default applications for http/https links
 COPY --chown=betterbird:betterbird scripts/mimeapps.list /home/betterbird/.config/mimeapps.list
