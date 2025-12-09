@@ -47,6 +47,15 @@ Then open **<http://localhost:6080>** in your browser!
 - Default password: `betterbird`
 - Use any VNC client (TigerVNC, RealVNC, etc.)
 
+## Using the Interface
+
+Once connected via noVNC or VNC client:
+
+- **BetterBird** starts automatically
+- **Right-click** on the desktop to access the application menu
+- Launch **Firefox** from the menu to browse the web
+- Email links in BetterBird open automatically in Firefox (no prompt)
+
 ## Configuration
 
 ### Environment Variables

@@ -451,12 +451,28 @@ build:
 
 The image includes **Firefox ESR** (Extended Support Release) as the default web browser. This allows BetterBird to open links from emails directly. Firefox ESR is:
 
-- Automatically set as the default browser using `update-alternatives`
+- Automatically set as the default browser using `update-alternatives` and XDG MIME associations
+- Configured to handle http:// and https:// links automatically (no prompt in BetterBird)
+- Available in the Fluxbox right-click menu for easy access
 - Updated from Debian repositories during the Docker build process
 - Stable and secure with long-term support
 - Fully functional within the VNC session
 
-You can access Firefox from within the VNC session alongside BetterBird.
+You can access Firefox from within the VNC session by:
+- Right-clicking on the desktop and selecting "Firefox" from the menu
+- Clicking any web link in BetterBird (opens automatically)
+
+### Window Manager Menu
+
+The image uses **Fluxbox** as a lightweight window manager. You can access the application menu by **right-clicking anywhere on the desktop**. The menu includes:
+
+- **BetterBird** - Launch the email client
+- **Firefox** - Launch the web browser
+- **Terminal** - Open a terminal (xterm)
+- **Restart** - Restart the window manager
+- **Exit** - Exit the window manager
+
+You can customize the Fluxbox menu by modifying `/home/betterbird/.fluxbox/menu` in the Dockerfile.
 
 ### Different Window Manager
 
