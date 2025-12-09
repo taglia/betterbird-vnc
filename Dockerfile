@@ -103,49 +103,21 @@ RUN mkdir -p /home/betterbird/.vnc && \
     echo "${VNC_PASSWORD}" | vncpasswd -f > /home/betterbird/.vnc/passwd && \
     chmod 600 /home/betterbird/.vnc/passwd
 
-# Create desktop entries for applications
-RUN mkdir -p /usr/share/applications && \
-    echo "[Desktop Entry]\n\
-Name=BetterBird\n\
-Comment=Email Client\n\
-Exec=/opt/betterbird/betterbird\n\
-Icon=mail-client\n\
-Terminal=false\n\
-Type=Application\n\
-Categories=Network;Email;" > /usr/share/applications/betterbird.desktop && \
-    echo "[Desktop Entry]\n\
-Name=Firefox ESR\n\
-Comment=Web Browser\n\
-Exec=/usr/bin/firefox-esr %u\n\
-Icon=firefox-esr\n\
-Terminal=false\n\
-Type=Application\n\
-Categories=Network;WebBrowser;\n\
-MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;" > /usr/share/applications/firefox-esr.desktop && \
-    update-desktop-database /usr/share/applications
+# Copy desktop entries for applications
+COPY scripts/betterbird.desktop /usr/share/applications/betterbird.desktop
+COPY scripts/firefox-esr.desktop /usr/share/applications/firefox-esr.desktop
+RUN update-desktop-database /usr/share/applications
 
 # Configure default applications for http/https links
-RUN mkdir -p /home/betterbird/.config && \
-    echo "[Default Applications]\n\
-x-scheme-handler/http=firefox-esr.desktop\n\
-x-scheme-handler/https=firefox-esr.desktop\n\
-text/html=firefox-esr.desktop" > /home/betterbird/.config/mimeapps.list && \
-    chown -R betterbird:betterbird /home/betterbird/.config
+COPY --chown=betterbird:betterbird scripts/mimeapps.list /home/betterbird/.config/mimeapps.list
 
 # Fluxbox config for minimal window manager
+COPY --chown=betterbird:betterbird scripts/fluxbox-menu /home/betterbird/.fluxbox/menu
 RUN mkdir -p /home/betterbird/.fluxbox && \
     echo "session.screen0.toolbar.visible: false" > /home/betterbird/.fluxbox/init && \
     echo "session.screen0.fullMaximization: true" >> /home/betterbird/.fluxbox/init && \
     echo "session.screen0.slit.placement: RightBottom" >> /home/betterbird/.fluxbox/init && \
-    echo "session.screen0.slit.autoHide: true" >> /home/betterbird/.fluxbox/init && \
-    echo "[begin] (Fluxbox)\n\
-  [exec] (BetterBird) {/opt/betterbird/betterbird}\n\
-  [exec] (Firefox) {/usr/bin/firefox-esr}\n\
-  [exec] (Terminal) {xterm}\n\
-  [separator]\n\
-  [restart] (Restart)\n\
-  [exit] (Exit)\n\
-[end]" > /home/betterbird/.fluxbox/menu
+    echo "session.screen0.slit.autoHide: true" >> /home/betterbird/.fluxbox/init
 
 USER root
 

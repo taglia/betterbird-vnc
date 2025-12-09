@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Firefox ESR
+Comment=Web Browser
+Exec=/usr/bin/firefox-esr %u
+Icon=firefox-esr
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;

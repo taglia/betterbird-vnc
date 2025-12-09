@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=BetterBird
+Comment=Email Client
+Exec=/opt/betterbird/betterbird
+Icon=mail-client
+Terminal=false
+Type=Application
+Categories=Network;Email;

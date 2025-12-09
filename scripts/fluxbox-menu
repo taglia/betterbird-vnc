@@ -1,0 +1,8 @@
+[begin] (Fluxbox)
+  [exec] (BetterBird) {/opt/betterbird/betterbird}
+  [exec] (Firefox) {/usr/bin/firefox-esr}
+  [exec] (Terminal) {xterm}
+  [separator]
+  [restart] (Restart)
+  [exit] (Exit)
+[end]
