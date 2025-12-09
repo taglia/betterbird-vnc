@@ -13,6 +13,7 @@ Run [BetterBird](https://www.betterbird.eu/) email client in a Docker container 
 - **Web-based access**: Access BetterBird through your browser via noVNC
 - **Traditional VNC support**: Connect using any VNC client
 - **Persistent data**: Email profiles and downloads are persisted using Docker volumes
+- **Firefox ESR included**: Default web browser for opening links from emails
 - **Debian-based**: Built on Debian Bookworm for stability and compatibility
 - **Easy updates**: Simple scripts to update BetterBird and publish new images
 - **Configurable**: Customize resolution, timezone, VNC password, and more
@@ -445,6 +446,17 @@ build:
   args:
     BETTERBIRD_VERSION: 140.4.0esr-bb13
 ```
+
+### Web Browser
+
+The image includes **Firefox ESR** (Extended Support Release) as the default web browser. This allows BetterBird to open links from emails directly. Firefox ESR is:
+
+- Automatically set as the default browser using `update-alternatives`
+- Updated from Debian repositories during the Docker build process
+- Stable and secure with long-term support
+- Fully functional within the VNC session
+
+You can access Firefox from within the VNC session alongside BetterBird.
 
 ### Different Window Manager
 

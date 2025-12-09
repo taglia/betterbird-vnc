@@ -29,6 +29,7 @@ Then open **<http://localhost:6080>** in your browser!
 - 🌐 **Web-based access** - Use BetterBird in your browser via noVNC
 - 🖥️ **VNC support** - Connect with traditional VNC clients
 - 💾 **Persistent data** - Email profiles and downloads saved in Docker volumes
+- 🌍 **Firefox ESR included** - Default web browser for opening links from emails
 - 🔧 **Configurable** - Customize resolution, timezone, VNC password
 - 🐧 **Debian-based** - Built on stable Debian Bookworm
 

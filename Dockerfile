@@ -47,6 +47,8 @@ RUN apt-get update && apt-get install -y \
     # Fonts
     fonts-liberation \
     fonts-dejavu \
+    # Web browser
+    firefox-esr \
     # Utilities
     wget \
     bzip2 \
@@ -60,6 +62,10 @@ RUN apt-get update && apt-get install -y \
 # Create user
 RUN groupadd -g ${USER_GID} betterbird && \
     useradd -m -u ${USER_UID} -g betterbird -s /bin/bash betterbird
+
+# Set Firefox as default browser
+RUN update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/firefox-esr 100 && \
+    update-alternatives --set x-www-browser /usr/bin/firefox-esr
 
 # Install noVNC
 RUN git clone --depth 1 https://github.com/novnc/noVNC.git /opt/noVNC && \
