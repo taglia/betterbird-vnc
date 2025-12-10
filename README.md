@@ -101,7 +101,7 @@ Use any VNC client like:
 |----------|---------|-------------|
 | `PUID` | `1000` | User ID for file permissions (set to match host user) |
 | `PGID` | `1000` | Group ID for file permissions (set to match host user) |
-| `BETTERBIRD_PROFILE` | `/home/betterbird/.thunderbird` | BetterBird profile directory path |
+| `BETTERBIRD_PROFILE` | *(not set)* | BetterBird profile directory path. If not set, BetterBird will use its default profile selection from `profiles.ini` |
 | `VNC_PASSWORD` | `betterbird` | Password for VNC access |
 | `VNC_RESOLUTION` | `1280x720` | Screen resolution (e.g., 1920x1080) |
 | `TZ` | `UTC` | Timezone (e.g., America/New_York, Europe/London) |
@@ -152,20 +152,27 @@ echo "PGID=$(id -g)" >> .env
 docker-compose up -d
 ```
 
-### Custom Profile Directory
+### Profile Management
 
-You can specify a custom location for the BetterBird profile:
+BetterBird profile handling depends on whether you set the `BETTERBIRD_PROFILE` environment variable:
 
-**Using environment variable:**
+**Default behavior (BETTERBIRD_PROFILE not set):**
+
+- BetterBird will use its standard profile selection based on `profiles.ini`
+- Profiles are stored in `/home/betterbird/.thunderbird/`
+- BetterBird will prompt for profile selection if multiple profiles exist
+- This is the standard BetterBird behavior
 
 ```yaml
-environment:
-  - BETTERBIRD_PROFILE=/custom/path/to/profile
+# No BETTERBIRD_PROFILE specified - uses profiles.ini
 volumes:
-  - /host/path/to/profile:/custom/path/to/profile
+  - betterbird-profile:/home/betterbird/.thunderbird
+  - betterbird-downloads:/home/betterbird/Downloads
 ```
 
-**Example: Using a host directory directly:**
+**Custom profile directory (BETTERBIRD_PROFILE set):**
+
+When you set `BETTERBIRD_PROFILE`, BetterBird will launch with the `--profile` flag pointing to that specific directory, bypassing `profiles.ini`:
 
 ```yaml
 environment:
@@ -175,11 +182,22 @@ volumes:
   - /home/myuser/Downloads:/home/betterbird/Downloads
 ```
 
+**Or using a named volume:**
+
+```yaml
+environment:
+  - BETTERBIRD_PROFILE=/data/custom-profile
+volumes:
+  - my-custom-profile:/data/custom-profile
+  - betterbird-downloads:/home/betterbird/Downloads
+```
+
 This is useful when you want to:
 
+- Force BetterBird to use a specific profile directory
 - Use an existing profile from another machine
 - Back up your profile to a specific location
-- Share profile across multiple containers (not recommended while running)
+- Avoid profile selection prompts
 
 ## Data Persistence
 

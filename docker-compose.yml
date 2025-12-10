@@ -17,7 +17,7 @@ services:
       - PGID=1000  # Group ID (change to match your host user)
       - VNC_PASSWORD=betterbird
       - VNC_RESOLUTION=1280x720
-      - BETTERBIRD_PROFILE=/home/betterbird/.thunderbird  # Profile directory path
+      # - BETTERBIRD_PROFILE=/home/betterbird/.thunderbird  # Uncomment to use a specific profile (bypasses profiles.ini)
       - TZ=UTC
       - DISPLAY=:0
     volumes:

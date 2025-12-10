@@ -12,7 +12,6 @@ ENV DISPLAY=:0 \
     NOVNC_PORT=6080 \
     VNC_RESOLUTION=1280x720 \
     VNC_PASSWORD=betterbird \
-    BETTERBIRD_PROFILE=/home/betterbird/.thunderbird \
     TZ=UTC
 
 # Install dependencies
@@ -95,7 +94,8 @@ RUN mkdir -p \
 # Copy configuration files
 COPY --chown=betterbird:betterbird scripts/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY --chown=betterbird:betterbird scripts/start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
+COPY --chown=betterbird:betterbird scripts/betterbird-wrapper.sh /usr/local/bin/betterbird-wrapper.sh
+RUN chmod +x /usr/local/bin/start.sh /usr/local/bin/betterbird-wrapper.sh
 
 # Copy desktop entries for applications (as root)
 COPY scripts/betterbird.desktop /usr/share/applications/betterbird.desktop
