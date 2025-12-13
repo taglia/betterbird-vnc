@@ -5,7 +5,7 @@
 # This allows users to set any custom environment variables in docker-compose.yml
 export $(env | cut -d= -f1)
 
-if [ "$USE_PROFILE_FLAG" = "true" ] && [ -n "$BETTERBIRD_PROFILE" ]; then
+if [ -n "$BETTERBIRD_PROFILE" ]; then
     # Use specific profile directory
     exec /opt/betterbird/betterbird --profile "$BETTERBIRD_PROFILE"
 else
