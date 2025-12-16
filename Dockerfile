@@ -117,7 +117,8 @@ RUN mkdir -p /home/betterbird/.fluxbox && \
     echo "session.screen0.toolbar.visible: false" > /home/betterbird/.fluxbox/init && \
     echo "session.screen0.fullMaximization: true" >> /home/betterbird/.fluxbox/init && \
     echo "session.screen0.slit.placement: RightBottom" >> /home/betterbird/.fluxbox/init && \
-    echo "session.screen0.slit.autoHide: true" >> /home/betterbird/.fluxbox/init
+    echo "session.screen0.slit.autoHide: true" >> /home/betterbird/.fluxbox/init && \
+    echo "session.screen0.workspaces: 1" >> /home/betterbird/.fluxbox/init
 
 USER root
 
