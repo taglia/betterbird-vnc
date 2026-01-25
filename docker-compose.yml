@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        BETTERBIRD_VERSION: 140.5.0esr-bb14
+        BETTERBIRD_VERSION: 140.7.1esr-bb18
         USER_UID: 1000
         USER_GID: 1000
     image: betterbird-vnc:latest

@@ -1,7 +1,7 @@
 FROM debian:bookworm-slim
 
 # Build arguments
-ARG BETTERBIRD_VERSION=140.5.0esr-bb14
+ARG BETTERBIRD_VERSION=140.7.1esr-bb18
 ARG DEBIAN_FRONTEND=noninteractive
 ARG USER_UID=1000
 ARG USER_GID=1000
