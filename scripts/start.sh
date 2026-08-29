@@ -48,7 +48,8 @@ fi
 if [ ! -z "$VNC_PASSWORD" ]; then
     echo "Configuring VNC password..."
     mkdir -p /home/betterbird/.vnc
-    echo "$VNC_PASSWORD" | vncpasswd -f > /home/betterbird/.vnc/passwd
+    x11vnc -storepasswd "$VNC_PASSWORD" /home/betterbird/.vnc/passwd
+    chown betterbird:betterbird /home/betterbird/.vnc/passwd
     chmod 600 /home/betterbird/.vnc/passwd
 fi
 

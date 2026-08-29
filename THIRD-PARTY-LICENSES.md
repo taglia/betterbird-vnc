@@ -18,7 +18,7 @@ and improvements not yet available in standard Thunderbird.
 
 ## noVNC
 
-- **Version**: Latest from GitHub (cloned during build)
+- **Version**: Pinned release downloaded from GitHub during build
 - **License**: Multiple licenses depending on component:
   - **Core JavaScript**: Mozilla Public License 2.0
   - **HTML/CSS files**: BSD 2-Clause License
@@ -39,20 +39,19 @@ The noVNC core library files (JavaScript code necessary for full noVNC
 operation) are licensed under MPL 2.0. The HTML, CSS, font, and image files
 are licensed under more permissive licenses to allow easy integration.
 
-## TigerVNC
+## x11vnc
 
-- **Version**: As provided by Debian Bookworm repositories
+- **Version**: As provided by Debian Trixie repositories
 - **License**: GNU General Public License v2.0
-- **Website**: https://tigervnc.org/
-- **Source Code**: https://github.com/TigerVNC/tigervnc
-- **Debian Package**: https://packages.debian.org/bookworm/tigervnc-standalone-server
+- **Website**: https://github.com/LibVNC/x11vnc
+- **Source Code**: https://github.com/LibVNC/x11vnc
+- **Debian Package**: https://packages.debian.org/trixie/x11vnc
 - **License Text**: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
-TigerVNC is a high-performance, platform-neutral implementation of VNC
-(Virtual Network Computing), distributed under the GNU General Public
-License version 2.
+x11vnc is a VNC server that allows remote viewing of real X11 displays,
+distributed under the GNU General Public License version 2.
 
-### TigerVNC License Notice
+### x11vnc License Notice
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the Free
@@ -62,17 +61,17 @@ This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-The complete source code for the version of TigerVNC included in this image
+The complete source code for the version of x11vnc included in this image
 is available at the GitHub repository listed above, and from the Debian
 source package repositories.
 
 ## Fluxbox
 
-- **Version**: As provided by Debian Bookworm repositories
+- **Version**: As provided by Debian Trixie repositories
 - **License**: MIT License
 - **Website**: http://fluxbox.org/
 - **Source Code**: https://github.com/fluxbox/fluxbox
-- **Debian Package**: https://packages.debian.org/bookworm/fluxbox
+- **Debian Package**: https://packages.debian.org/trixie/fluxbox
 - **Copyright**: Copyright (c) 2001-2011 The Fluxbox Team
 
 Fluxbox is a lightweight window manager for X, licensed under the MIT License.
@@ -99,11 +98,11 @@ SOFTWARE.
 
 ## Debian GNU/Linux
 
-- **Distribution**: Debian Bookworm (version 12)
-- **Base Image**: debian:bookworm-slim
+- **Distribution**: Debian Trixie (version 13)
+- **Base Image**: debian:trixie-slim
 - **License**: Various DFSG-compliant open source licenses
 - **Website**: https://www.debian.org/
-- **Package Sources**: https://packages.debian.org/bookworm/
+- **Package Sources**: https://packages.debian.org/trixie/
 - **Source Code**: https://www.debian.org/distrib/packages
 
 Debian packages are licensed under various Free Software licenses that comply
@@ -114,23 +113,23 @@ LGPL, BSD, MIT, Apache, and others.
 
 This image includes various Debian packages, including but not limited to:
 
-- **X11 and VNC components**: xvfb, x11vnc, tigervnc-standalone-server, tigervnc-common
-- **System libraries**: libasound2, libdbus-glib-1-2, libdbus-1-3, libgtk-3-0, etc.
-- **Graphics libraries**: libgl1-mesa-glx, libgl1-mesa-dri, libegl1-mesa, libgbm1
+- **X11 and VNC components**: xvfb, x11vnc, fluxbox, xterm
+- **System libraries**: libasound2t64, libdbus-glib-1-2, libdbus-1-3, libgtk-3-0, etc.
+- **Graphics libraries**: libgl1, libgl1-mesa-dri, libegl1, libgbm1
 - **Fonts**: fonts-liberation, fonts-dejavu
-- **Utilities**: wget, bzip2, xz-utils, ca-certificates, supervisor, procps, curl
+- **Utilities**: bzip2, xz-utils, ca-certificates, supervisor, procps
 
 For complete license information about any specific Debian package, you can:
 
 1. Run inside the container: `dpkg -L <package-name> | grep copyright`
-2. Visit the Debian package page: `https://packages.debian.org/bookworm/<package-name>`
+2. Visit the Debian package page: `https://packages.debian.org/trixie/<package-name>`
 3. View copyright files in the container at: `/usr/share/doc/<package-name>/copyright`
 
 ## Python and Dependencies
 
 - **Python 3**: Python Software Foundation License (PSF)
 - **python3-numpy**: BSD License
-- **websockify**: LGPLv3 or later (cloned with noVNC)
+- **websockify**: LGPLv3 or later (installed alongside noVNC)
 
 Python and its standard libraries are licensed under the PSF License, which
 is GPL-compatible and approved by the OSI.
@@ -138,7 +137,7 @@ is GPL-compatible and approved by the OSI.
 ## Supervisor
 
 - **License**: BSD-like (Repoze Public License)
-- **Debian Package**: https://packages.debian.org/bookworm/supervisor
+- **Debian Package**: https://packages.debian.org/trixie/supervisor
 
 Supervisor is a process control system licensed under a BSD-style license.
 
@@ -147,11 +146,11 @@ Supervisor is a process control system licensed under a BSD-style license.
 As required by the GPL and MPL licenses, source code for all components is
 freely available:
 
-### GPL Components (TigerVNC)
+### GPL Components (x11vnc)
 
-The complete and corresponding source code for TigerVNC is available at:
-- GitHub: https://github.com/TigerVNC/tigervnc
-- Debian Sources: `apt-get source tigervnc-standalone-server`
+The complete and corresponding source code for x11vnc is available at:
+- GitHub: https://github.com/LibVNC/x11vnc
+- Debian Sources: `apt-get source x11vnc`
 
 You can also request the source code in writing within three years of
 receiving this software.
@@ -179,8 +178,8 @@ docker exec <container-name> dpkg -l
 # View copyright information for a specific package
 docker exec <container-name> cat /usr/share/doc/<package-name>/copyright
 
-# Example: View TigerVNC license
-docker exec <container-name> cat /usr/share/doc/tigervnc-standalone-server/copyright
+# Example: View x11vnc license
+docker exec <container-name> cat /usr/share/doc/x11vnc/copyright
 ```
 
 ## Summary

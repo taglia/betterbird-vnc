@@ -215,14 +215,14 @@ Two volumes are used for persistent data:
 docker run --rm \
   -v betterbird-profile:/data \
   -v $(pwd):/backup \
-  debian:bookworm-slim \
+  debian:trixie-slim \
   tar czf /backup/betterbird-profile-backup.tar.gz /data
 
 # Restore profile
 docker run --rm \
   -v betterbird-profile:/data \
   -v $(pwd):/backup \
-  debian:bookworm-slim \
+  debian:trixie-slim \
   tar xzf /backup/betterbird-profile-backup.tar.gz -C /
 ```
 
@@ -746,7 +746,7 @@ This Docker image packages the following third-party software components, each l
 |-----------|---------|---------|
 | **BetterBird** | Mozilla Public License 2.0 | [betterbird.eu](https://www.betterbird.eu/) |
 | **noVNC** | MPL 2.0, BSD-2-Clause, SIL OFL 1.1, others | [novnc.com](https://novnc.com/) |
-| **TigerVNC** | GNU General Public License v2.0 | [tigervnc.org](https://tigervnc.org/) |
+| **x11vnc** | GNU General Public License v2.0 | [github.com/LibVNC/x11vnc](https://github.com/LibVNC/x11vnc) |
 | **Fluxbox** | MIT License | [fluxbox.org](http://fluxbox.org/) |
 | **Debian packages** | Various DFSG-compliant licenses | [debian.org](https://www.debian.org/) |
 
@@ -759,7 +759,7 @@ As required by the licenses of included software, source code is freely availabl
 - **BetterBird source**: <https://github.com/Betterbird/thunderbird-patches>
 - **BetterBird releases**: <https://www.betterbird.eu/downloads/>
 - **noVNC source**: <https://github.com/novnc/noVNC>
-- **TigerVNC source**: <https://github.com/TigerVNC/tigervnc>
+- **x11vnc source**: <https://github.com/LibVNC/x11vnc>
 - **Fluxbox source**: <https://github.com/fluxbox/fluxbox>
 - **Debian sources**: <https://www.debian.org/distrib/packages>
 
@@ -776,6 +776,6 @@ All packaged software is used in unmodified form from official sources.
 
 - [BetterBird](https://www.betterbird.eu/) - The fine-tuned email client based on Thunderbird
 - [noVNC](https://novnc.com/) - Web-based VNC client enabling browser access
-- [TigerVNC](https://tigervnc.org/) - High-performance VNC server
+- [x11vnc](https://github.com/LibVNC/x11vnc) - VNC server for X displays
 - [Fluxbox](http://fluxbox.org/) - Lightweight window manager
 - [Debian](https://www.debian.org/) - The stable and reliable base distribution
