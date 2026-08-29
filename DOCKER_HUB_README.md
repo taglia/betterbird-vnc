@@ -156,14 +156,14 @@ Email attachments and downloads are stored in:
 docker run --rm \
   -v betterbird-profile:/data \
   -v $(pwd):/backup \
-  debian:bookworm-slim \
+  debian:trixie-slim \
   tar czf /backup/betterbird-profile-backup.tar.gz /data
 
 # Restore profile
 docker run --rm \
   -v betterbird-profile:/data \
   -v $(pwd):/backup \
-  debian:bookworm-slim \
+  debian:trixie-slim \
   tar xzf /backup/betterbird-profile-backup.tar.gz -C /
 ```
 
@@ -283,7 +283,7 @@ This Docker image includes third-party software components, each under its own o
 |-----------|---------|
 | **BetterBird** | Mozilla Public License 2.0 |
 | **noVNC** | MPL 2.0 (core), BSD-2-Clause, SIL OFL 1.1, others |
-| **TigerVNC** | GNU General Public License v2.0 |
+| **x11vnc** | GNU General Public License v2.0 |
 | **Fluxbox** | MIT License |
 | **Debian packages** | Various DFSG-compliant licenses |
 
@@ -293,7 +293,7 @@ Source code for all components is freely available:
 
 - **BetterBird**: <https://www.betterbird.eu/downloads/> and <https://github.com/Betterbird/thunderbird-patches>
 - **noVNC**: <https://github.com/novnc/noVNC>
-- **TigerVNC**: <https://github.com/TigerVNC/tigervnc>
+- **x11vnc**: <https://github.com/LibVNC/x11vnc>
 - **Fluxbox**: <https://github.com/fluxbox/fluxbox>
 - **Debian**: <https://www.debian.org/distrib/packages>
 
