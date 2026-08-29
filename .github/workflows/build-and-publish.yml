@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      # Temporary: publish this branch as a test tag for pre-merge validation
-      - security/trixie-vuln-reduction
     tags:
       - 'v*'
   pull_request:
@@ -65,7 +63,6 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=${{ steps.version.outputs.version }},enable={{is_default_branch}}
-            type=raw,value=trixie-test,enable=${{ github.ref == 'refs/heads/security/trixie-vuln-reduction' }}
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -136,15 +133,22 @@ jobs:
             | jq -r '.results | sort_by(.last_updated) | reverse | .[].name')
 
           # Keep 'latest' plus the $KEEP_VERSION_TAGS most recently pushed
-          # other tags; delete the rest.
+          # version tags (e.g. 140.5.0esr-bb14). Anything else (test/temp
+          # tags) and older version tags are deleted.
           COUNT=0
           for tag in $TAGS; do
+            KEEP=false
             if [ "$tag" = "latest" ]; then
-              echo "Keeping: $tag"
-              continue
+              KEEP=true
+            else
+              case "$tag" in
+                [0-9]*)
+                  COUNT=$((COUNT+1))
+                  [ "$COUNT" -le "$KEEP_VERSION_TAGS" ] && KEEP=true
+                  ;;
+              esac
             fi
-            COUNT=$((COUNT+1))
-            if [ "$COUNT" -le "$KEEP_VERSION_TAGS" ]; then
+            if [ "$KEEP" = true ]; then
               echo "Keeping: $tag"
             else
               echo "Deleting: $tag"
@@ -153,6 +157,29 @@ jobs:
                 || echo "WARNING: failed to delete $tag (token may need 'Read, Write, Delete' scope)"
             fi
           done
+
+      - name: Delete old ghcr tags
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          set -e
+          # Same policy as Docker Hub: keep 'latest' and the newest
+          # $KEEP_VERSION_TAGS version-tagged images; delete other tagged
+          # versions (untagged ones were removed by the previous step).
+          gh api "/users/$OWNER/packages/container/$IMAGE_NAME/versions?per_page=100" --paginate \
+          | jq -r --argjson keep "$KEEP_VERSION_TAGS" '
+              [.[] | select((.metadata.container.tags | length) > 0)]
+              | sort_by(.created_at) | reverse
+              | map(select(.metadata.container.tags | index("latest") | not))
+              | (map(select(any(.metadata.container.tags[]; test("^[0-9]"))))[$keep:]
+                 + map(select(any(.metadata.container.tags[]; test("^[0-9]")) | not)))
+              | .[] | "\(.id) \(.metadata.container.tags | join(","))"' \
+          | while read -r id tags; do
+              echo "Deleting ghcr version $id (tags: $tags)"
+              gh api -X DELETE "/users/$OWNER/packages/container/$IMAGE_NAME/versions/$id" \
+                || echo "WARNING: failed to delete ghcr version $id"
+            done
 
   check-updates:
     runs-on: ubuntu-latest
