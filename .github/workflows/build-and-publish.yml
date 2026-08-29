@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+      # Temporary: publish this branch as a test tag for pre-merge validation
+      - security/trixie-vuln-reduction
     tags:
       - 'v*'
   pull_request:
@@ -62,7 +64,8 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=raw,value=${{ steps.version.outputs.version }}
+            type=raw,value=${{ steps.version.outputs.version }},enable={{is_default_branch}}
+            type=raw,value=trixie-test,enable=${{ github.ref == 'refs/heads/security/trixie-vuln-reduction' }}
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -99,6 +102,57 @@ jobs:
           repository: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}
           readme-filepath: ./DOCKER_HUB_README.md
           short-description: "BetterBird email client with web-based VNC access via noVNC"
+
+  cleanup-old-images:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    permissions:
+      packages: write
+    env:
+      KEEP_VERSION_TAGS: 3
+    steps:
+      # ghcr accumulates untagged image versions on every push (each time a
+      # tag like 'latest' is reused, the old digest stays behind untagged)
+      - name: Delete untagged ghcr image versions
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: ${{ env.IMAGE_NAME }}
+          package-type: container
+          delete-only-untagged-versions: 'true'
+
+      - name: Delete old Docker Hub tags
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+        run: |
+          set -e
+          JWT=$(curl -fsS -H "Content-Type: application/json" -X POST \
+            -d "{\"username\": \"$DOCKER_HUB_USERNAME\", \"password\": \"$DOCKER_HUB_TOKEN\"}" \
+            https://hub.docker.com/v2/users/login/ | jq -r .token)
+
+          TAGS=$(curl -fsS -H "Authorization: JWT $JWT" \
+            "https://hub.docker.com/v2/repositories/$DOCKER_HUB_USERNAME/$IMAGE_NAME/tags/?page_size=100" \
+            | jq -r '.results | sort_by(.last_updated) | reverse | .[].name')
+
+          # Keep 'latest' plus the $KEEP_VERSION_TAGS most recently pushed
+          # other tags; delete the rest.
+          COUNT=0
+          for tag in $TAGS; do
+            if [ "$tag" = "latest" ]; then
+              echo "Keeping: $tag"
+              continue
+            fi
+            COUNT=$((COUNT+1))
+            if [ "$COUNT" -le "$KEEP_VERSION_TAGS" ]; then
+              echo "Keeping: $tag"
+            else
+              echo "Deleting: $tag"
+              curl -fsS -X DELETE -H "Authorization: JWT $JWT" \
+                "https://hub.docker.com/v2/repositories/$DOCKER_HUB_USERNAME/$IMAGE_NAME/tags/$tag/" \
+                || echo "WARNING: failed to delete $tag (token may need 'Read, Write, Delete' scope)"
+            fi
+          done
 
   check-updates:
     runs-on: ubuntu-latest
