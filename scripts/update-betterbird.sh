@@ -1,81 +1,57 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-echo "BetterBird Version Update Script"
-echo "=================================="
-
-# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+NC='\033[0m'
+fail() { printf "${RED}%s${NC}\n" "$*" >&2; exit 1; }
+CHECK=false
+case "${1:-}" in
+    '') ;;
+    --check) CHECK=true ;;
+    *) fail 'Usage: scripts/update-betterbird.sh [--check]' ;;
+esac
 
-# Configuration
-BETTERBIRD_DOWNLOAD_URL="https://www.betterbird.eu/downloads/get.php?os=linux&lang=en-US&version=release"
-VERSION_FILE="VERSION"
-
-echo "Checking for latest BetterBird version..."
-
-# Follow the redirect to get the actual filename which contains the version
-LATEST_VERSION=$(curl -sI "$BETTERBIRD_DOWNLOAD_URL" | \
-    grep -i "^location:" | \
-    grep -oP 'betterbird-\K[0-9]+\.[0-9]+\.[0-9]+esr-bb[0-9]+' | \
-    head -1)
-
-if [ -z "$LATEST_VERSION" ]; then
-    echo -e "${RED}Error: Could not fetch latest version${NC}"
-    exit 1
+# Resolve the official stable channel, then validate everything before modifying files.
+CURL=(curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' --connect-timeout 15 --max-time 60 --retry 3)
+URL=$("${CURL[@]}" 'https://www.betterbird.eu/downloads/getloc.php?os=linux&lang=en-US&version=release')
+PATTERN='^https://www\.betterbird\.eu/downloads/LinuxArchive/betterbird-([0-9]+\.[0-9]+\.[0-9]+esr-bb[0-9]+)\.en-US\.linux-x86_64\.tar\.xz$'
+[[ "$URL" =~ $PATTERN ]] || fail 'Unexpected upstream download URL'
+LATEST_VERSION="${BASH_REMATCH[1]}"
+FILENAME="${URL##*/}"
+HASHES=$("${CURL[@]}" "https://www.betterbird.eu/downloads/sha256-${LATEST_VERSION%%.*}.txt")
+HASH=$(printf '%s\n' "$HASHES" | awk -v file="$FILENAME" '{name=$2; sub(/^\*/, "", name); if(name==file) print $1}')
+[[ "$HASH" =~ ^[a-fA-F0-9]{64}$ ]] || fail 'Missing, duplicate, or invalid upstream SHA-256'
+HASH="${HASH,,}"
+CURRENT_VERSION=$(<VERSION)
+[[ "$CURRENT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+esr-bb[0-9]+$ ]] || fail 'Invalid current VERSION'
+if [[ "$CURRENT_VERSION" != "$LATEST_VERSION" ]] && [[ "$(printf '%s\n' "$CURRENT_VERSION" "$LATEST_VERSION" | sort -V | tail -1)" != "$LATEST_VERSION" ]]; then
+    fail "Refusing downgrade: $CURRENT_VERSION -> $LATEST_VERSION"
 fi
-
-echo -e "${GREEN}Latest BetterBird version: $LATEST_VERSION${NC}"
-
-# Read current version if exists
-CURRENT_VERSION=""
-if [ -f "$VERSION_FILE" ]; then
-    CURRENT_VERSION=$(cat "$VERSION_FILE")
-    echo -e "Current version in VERSION file: $CURRENT_VERSION"
+CURRENT_HASH=''
+[[ ! -f BETTERBIRD_SHA256 ]] || CURRENT_HASH=$(<BETTERBIRD_SHA256)
+# A changed hash for an already pinned release requires manual investigation.
+if [[ "$CURRENT_VERSION" == "$LATEST_VERSION" && -n "$CURRENT_HASH" && "$CURRENT_HASH" != "$HASH" ]]; then
+    fail 'Upstream checksum changed for the pinned version; investigate before updating'
 fi
-
-# Check if we need to update
-if [ "$CURRENT_VERSION" = "$LATEST_VERSION" ]; then
-    echo -e "${YELLOW}Already using the latest version!${NC}"
-    echo "No update needed."
+AVAILABLE=false
+if [[ "$CURRENT_VERSION" != "$LATEST_VERSION" || "$CURRENT_HASH" != "$HASH" ]]; then AVAILABLE=true; fi
+printf "${GREEN}Stable Betterbird: %s (current: %s)${NC}\n" "$LATEST_VERSION" "$CURRENT_VERSION"
+if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+    printf 'update_available=%s\nversion=%s\n' "$AVAILABLE" "$LATEST_VERSION" >> "$GITHUB_OUTPUT"
+fi
+if [[ "$CHECK" == true || "$AVAILABLE" == false ]]; then
+    printf '%bNo files changed.%b\n' "$YELLOW" "$NC"
     exit 0
 fi
-
-echo ""
-echo -e "${YELLOW}Update available!${NC}"
-echo "  Current: $CURRENT_VERSION"
-echo "  Latest:  $LATEST_VERSION"
-echo ""
-
-# Update VERSION file
-echo "$LATEST_VERSION" > "$VERSION_FILE"
-echo -e "${GREEN}Updated VERSION file to $LATEST_VERSION${NC}"
-
-# Update Dockerfile
-if [ -f "Dockerfile" ]; then
-    echo "Updating Dockerfile..."
-    sed -i "s/ARG BETTERBIRD_VERSION=.*/ARG BETTERBIRD_VERSION=$LATEST_VERSION/" Dockerfile
-    echo -e "${GREEN}Updated Dockerfile${NC}"
-fi
-
-# Update docker-compose.yml
-if [ -f "docker-compose.yml" ]; then
-    echo "Updating docker-compose.yml..."
-    sed -i "s/BETTERBIRD_VERSION: .*/BETTERBIRD_VERSION: $LATEST_VERSION/" docker-compose.yml
-    echo -e "${GREEN}Updated docker-compose.yml${NC}"
-fi
-
-echo ""
-echo -e "${GREEN}Update complete!${NC}"
-echo ""
-echo "Note: Firefox ESR is included and will be updated from Debian repositories"
-echo "      during the Docker build process (apt-get install firefox-esr)."
-echo ""
-echo "Next steps:"
-echo "  1. Review the changes with: git diff"
-echo "  2. Build the new image with: scripts/build-and-publish.sh --build"
-echo "  3. Test the new image locally"
-echo "  4. Publish with: scripts/build-and-publish.sh --publish"
-echo ""
+# Require the expected declarations so an upstream/source layout change fails loudly.
+[[ $(grep -c '^ARG BETTERBIRD_VERSION=' Dockerfile) == 1 ]] || fail 'Missing/duplicate Dockerfile version'
+[[ $(grep -c '^ARG BETTERBIRD_SHA256=' Dockerfile) == 1 ]] || fail 'Missing/duplicate Dockerfile checksum'
+[[ $(grep -c '^[[:space:]]*BETTERBIRD_VERSION:' docker-compose.yml) == 1 ]] || fail 'Missing/duplicate compose version'
+[[ $(grep -c '^[[:space:]]*BETTERBIRD_SHA256:' docker-compose.yml) == 1 ]] || fail 'Missing/duplicate compose checksum'
+printf '%s\n' "$LATEST_VERSION" > VERSION
+printf '%s\n' "$HASH" > BETTERBIRD_SHA256
+sed -i "s/^ARG BETTERBIRD_VERSION=.*/ARG BETTERBIRD_VERSION=$LATEST_VERSION/; s/^ARG BETTERBIRD_SHA256=.*/ARG BETTERBIRD_SHA256=$HASH/" Dockerfile
+sed -i "s/^\([[:space:]]*BETTERBIRD_VERSION:\).*/\1 $LATEST_VERSION/; s/^\([[:space:]]*BETTERBIRD_SHA256:\).*/\1 $HASH/" docker-compose.yml
+printf '%bUpdated version and checksum. Review, build, and test before publishing.%b\n' "$GREEN" "$NC"

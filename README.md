@@ -15,7 +15,7 @@ Run [BetterBird](https://www.betterbird.eu/) email client in a Docker container 
 - **Persistent data**: Email profiles and downloads are persisted using Docker volumes
 - **Firefox ESR included**: Default web browser for opening links from emails
 - **Debian-based**: Built on Debian Bookworm for stability and compatibility
-- **Easy updates**: Simple scripts to update BetterBird and publish new images
+- **Verified updates**: Daily stable-release PRs, pinned Betterbird SHA-256, fresh weekly builds, and pre-publication vulnerability scans (see [.github/SETUP.md](.github/SETUP.md))
 - **Configurable**: Customize resolution, timezone, VNC password, and more
 - **Multi-registry**: Published to Docker Hub and GitHub Container Registry
 

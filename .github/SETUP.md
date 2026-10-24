@@ -50,7 +50,8 @@ The GitHub Action runs on:
 2. **Git tags** - Builds and publishes versioned tags (e.g., `v1.0.0`)
 3. **Pull requests** - Builds only (no publishing)
 4. **Manual dispatch** - Run manually from Actions tab
-5. **Weekly schedule** - Checks for BetterBird updates every Sunday at 2 AM UTC
+5. **Daily schedule** - Checks stable Betterbird/noVNC/websockify releases at 03:17 UTC
+6. **Weekly schedule** - Rebuilds from fresh Debian packages Sundays at 04:41 UTC
 
 ## Manual Workflow Dispatch
 
@@ -89,25 +90,28 @@ Use the GitHub web interface as described above.
 
 The workflow includes automatic version checking:
 
-- **Schedule**: Runs every Sunday at 2 AM UTC
+- **Schedule**: Daily at 03:17 UTC (GitHub may delay scheduled runs).
 - **Process**:
-  1. Runs `scripts/update-betterbird.sh`
-  2. If a new BetterBird version is found
-  3. Creates a Pull Request with the updated version
-  4. You review and merge the PR
-  5. Merging triggers a new build automatically
+  1. Resolve Betterbird's stable release and official SHA-256; reject malformed metadata and downgrades.
+  2. Check stable noVNC/websockify releases; Dependabot separately proposes Actions/base-image updates.
+  3. Create/update a PR with pinned versions and checksum. `PAT_TOKEN` must permit creating PRs and triggering their CI.
+  4. Review release notes, back up profiles before major upgrades, and merge the PR after CI passes.
+  5. CI builds with `pull: true` and `no-cache: true`, checks the archive checksum and embedded application version, and scans before publication.
+  6. Pull the published image and recreate your container. Existing containers are never upgraded automatically.
+
+### Security and registry policy
+
+Every build is fresh, including the weekly rebuild when Betterbird has not changed. The exact scanned image is pushed to both registries. Trivy blocks publication on **fixable HIGH/CRITICAL** findings; all HIGH/CRITICAL findings, including those without fixes, are retained in the `vulnerability-report` artifact. A green scan is not a guarantee that an upstream binary is vulnerability-free: monitor Betterbird/Thunderbird security advisories too.
+
+Enable GitHub Actions failure notifications in your account notification settings and monitor failed scheduled runs/blocked update PRs. Upstream security releases may require an immediate manual dispatch rather than waiting for Sunday.
+
+After a successful publication, cleanup preserves `latest` and three recent Betterbird release tags. Untagged GHCR objects may be OCI platform/attestation manifests, so cleanup must not indiscriminately delete them. Registry API failures fail the cleanup job rather than silently claiming success.
+
+Local builds via `scripts/build-and-publish.sh` also pull and bypass the cache, but do not run the CI security gate; prefer CI for publication.
 
 ## Multi-Architecture Builds (Optional)
 
-To build for multiple architectures (e.g., ARM64):
-
-Edit `.github/workflows/build-and-publish.yml`:
-
-```yaml
-platforms: linux/amd64,linux/arm64
-```
-
-Note: ARM64 builds take significantly longer (~30-60 minutes).
+Only `linux/amd64` is currently supported. The pinned Betterbird archive is x86-64, and the scan-before-push workflow loads a single-platform image. Adding ARM64 requires an appropriate upstream binary/checksum and per-platform scanning, not just changing the platforms list.
 
 ## Troubleshooting
 
