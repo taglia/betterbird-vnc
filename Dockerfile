@@ -2,6 +2,7 @@ FROM debian:trixie-slim
 
 # Build arguments
 ARG BETTERBIRD_VERSION=153.5.0esr-bb11
+ARG BETTERBIRD_SHA256=253b1760c9b7a5502a210c90d530f87eebdcae87b7af13af213d50ffb255dc11
 ARG NOVNC_VERSION=1.7.0
 ARG WEBSOCKIFY_VERSION=0.13.0
 ARG DEBIAN_FRONTEND=noninteractive
@@ -80,11 +81,13 @@ RUN mkdir -p /opt/noVNC/utils/websockify && \
     chown -R betterbird:betterbird /opt/noVNC
 
 # Download and install BetterBird
-# Use the get.php script to always get the latest release
+# Download the declared release, not the moving release redirect. Pin its checksum.
 RUN mkdir -p /opt/betterbird && \
-    curl -fsSL "https://www.betterbird.eu/downloads/get.php?os=linux&lang=en-US&version=release" \
+    curl -fsSL --retry 3 "https://www.betterbird.eu/downloads/LinuxArchive/betterbird-${BETTERBIRD_VERSION}.en-US.linux-x86_64.tar.xz" \
     -o /tmp/betterbird.tar.xz && \
+    echo "${BETTERBIRD_SHA256}  /tmp/betterbird.tar.xz" | sha256sum -c - && \
     tar -xJf /tmp/betterbird.tar.xz -C /opt/betterbird --strip-components=1 && \
+    test "$(sed -n 's/^Version=//p' /opt/betterbird/application.ini)" = "${BETTERBIRD_VERSION%esr-bb*}" && \
     rm /tmp/betterbird.tar.xz && \
     chown -R betterbird:betterbird /opt/betterbird
 

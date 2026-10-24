@@ -73,8 +73,9 @@ build_image() {
     echo ""
     
     # Build the base image
-    docker build \
+    docker build --pull --no-cache \
         --build-arg BETTERBIRD_VERSION="$version" \
+        --build-arg BETTERBIRD_SHA256="$(cat BETTERBIRD_SHA256)" \
         -t "$IMAGE_NAME:$version" \
         -t "$IMAGE_NAME:latest" \
         .

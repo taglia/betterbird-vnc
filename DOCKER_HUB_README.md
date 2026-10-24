@@ -169,8 +169,10 @@ docker run --rm \
 
 ## Available Tags
 
-- `latest` - Latest stable BetterBird version
-- `140.5.0esr-bb14` - Specific BetterBird version
+- `latest` - Most recently published, verified stable Betterbird build
+- `<version>esr-bb<revision>` - Exact Betterbird release (see the registry's Tags tab)
+
+Stable upstream updates are checked daily and proposed as reviewed PRs. Weekly clean rebuilds refresh Debian and Firefox packages. The Betterbird archive is pinned by version and SHA-256; publication is blocked on fixable HIGH/CRITICAL scan findings. Unfixed vulnerabilities and upstream patch delays can remain—this is not a guarantee of zero CVEs. Pull and recreate your container to receive updates; existing containers are not upgraded automatically.
 
 ## Ports
 
