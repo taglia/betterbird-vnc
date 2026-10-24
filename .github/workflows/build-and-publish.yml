@@ -34,7 +34,7 @@ jobs:
         run: |
           bash tests/test-update-betterbird.sh
           python3 tests/test-cleanup-registries.py
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
       - name: Read pinned release
         id: version
         run: |
