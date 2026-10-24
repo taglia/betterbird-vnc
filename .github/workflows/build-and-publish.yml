@@ -40,7 +40,7 @@ jobs:
         run: |
           echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
           echo "sha256=$(cat BETTERBIRD_SHA256)" >> "$GITHUB_OUTPUT"
-      - uses: docker/metadata-action@v5
+      - uses: docker/metadata-action@v6
         id: meta
         with:
           images: |
