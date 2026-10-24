@@ -44,7 +44,7 @@ jobs:
         id: meta
         with:
           images: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}
+            ${{ vars.DOCKER_HUB_NAMESPACE || 'tagliasteel' }}/${{ env.IMAGE_NAME }}
             ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
