@@ -55,9 +55,10 @@ class CleanupTests(unittest.TestCase):
     def test_dry_run(self):
         self.assertEqual(self.run_cleanup(), [])
 
-    def test_protect_children_and_untagged(self):
+    def test_protect_children_and_remove_unreachable(self):
         deleted = self.run_cleanup(apply=True)
-        self.assertEqual(len(deleted), 2)
+        self.assertEqual(len(deleted), 3)
+        self.assertTrue(any(url.endswith('/versions/4') for url in deleted))
         self.assertTrue(any(url.endswith('/versions/1') for url in deleted))
         self.assertTrue(any(url.endswith('/tags/pr-1/') for url in deleted))
 

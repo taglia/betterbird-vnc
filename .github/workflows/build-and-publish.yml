@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: images-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  group: images-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 env:

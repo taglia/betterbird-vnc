@@ -105,7 +105,7 @@ Every build is fresh, including the weekly rebuild when Betterbird has not chang
 
 Enable GitHub Actions failure notifications in your account notification settings and monitor failed scheduled runs/blocked update PRs. Upstream security releases may require an immediate manual dispatch rather than waiting for Sunday.
 
-After a successful publication, cleanup preserves `latest` and three recent Betterbird release tags. Untagged GHCR objects may be OCI platform/attestation manifests, so cleanup must not indiscriminately delete them. Registry API failures fail the cleanup job rather than silently claiming success.
+After a successful publication, cleanup preserves `latest` and three recent Betterbird release tags. Cleanup recursively resolves retained GHCR manifests and protects their platform/attestation children; only unreachable objects and obsolete tags are removed. All pages and retained manifests must be readable before any deletion starts. Registry API failures fail the cleanup job rather than silently claiming success.
 
 Local builds via `scripts/build-and-publish.sh` also pull and bypass the cache, but do not run the CI security gate; prefer CI for publication.
 

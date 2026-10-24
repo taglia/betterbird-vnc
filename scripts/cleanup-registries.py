@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Remove obsolete tags; dry-run by default. Never delete untagged GHCR objects."""
+"""Remove obsolete tags and unreachable GHCR manifests; dry-run by default."""
 import argparse
 import base64
 import json
@@ -109,10 +109,10 @@ def main():
             deletions.append((f"Docker Hub: {name}", hub_base + urllib.parse.quote(name, safe='') + '/', hub_token, "JWT"))
     for version in versions:
         names = version["metadata"]["container"]["tags"]
-        if not names or version["name"] in protected or gh_keep.intersection(names):
-            print(f"Keep GHCR {version['id']}: {','.join(names) or 'untagged (may be referenced)'}")
+        if version["name"] in protected or gh_keep.intersection(names):
+            print(f"Keep GHCR {version['id']}: {','.join(names) or 'referenced child manifest'}")
         else:
-            deletions.append((f"GHCR {version['id']}: {','.join(names)}", f"{base}/{version['id']}", gh, "Bearer"))
+            deletions.append((f"GHCR {version['id']}: {','.join(names) or 'unreferenced manifest'}",  f"{base}/{version['id']}", gh, "Bearer"))
     for label, url, token, scheme in deletions:
         print(f"{'Deleting' if args.apply else 'Would delete'} {label}", flush=True)
         if args.apply:
