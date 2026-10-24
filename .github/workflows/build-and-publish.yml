@@ -54,7 +54,7 @@ jobs:
           labels: |
             org.opencontainers.image.version=${{ steps.version.outputs.version }}
       - name: Build fresh image for verification
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           platforms: linux/amd64
