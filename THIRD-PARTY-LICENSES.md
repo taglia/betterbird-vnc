@@ -5,7 +5,7 @@ Each component is licensed under its respective open source license.
 
 ## BetterBird
 
-- **Version**: 140.5.0esr-bb14
+- **Version**: See [`VERSION`](VERSION) (archive checksum: [`BETTERBIRD_SHA256`](BETTERBIRD_SHA256))
 - **License**: Mozilla Public License 2.0
 - **Website**: https://www.betterbird.eu/
 - **Source Code**: https://github.com/Betterbird/thunderbird-patches

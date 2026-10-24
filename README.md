@@ -113,7 +113,8 @@ Use any VNC client like:
 
 | Argument | Default | Description |
 |----------|---------|-------------|
-| `BETTERBIRD_VERSION` | `140.5.0esr-bb14` | BetterBird version to install |
+| `BETTERBIRD_VERSION` | See [`VERSION`](VERSION) | Exact Betterbird release to install |
+| `BETTERBIRD_SHA256` | See [`BETTERBIRD_SHA256`](BETTERBIRD_SHA256) | Required matching archive checksum |
 | `USER_UID` | `1000` | User ID for the betterbird user |
 | `USER_GID` | `1000` | Group ID for the betterbird user |
 
@@ -237,13 +238,14 @@ docker run --rm \
 ### Build Locally
 
 ```bash
-# Build with default version
-docker build -t betterbird-vnc:latest .
+# Build the pinned version with fresh OS packages
+docker build --pull --no-cache -t betterbird-vnc:latest .
 
-# Build with specific version
-docker build \
-  --build-arg BETTERBIRD_VERSION=140.5.0esr-bb14 \
-  -t betterbird-vnc:140.5.0esr-bb14 \
+# Explicitly use the checked-in version/checksum pair
+docker build --pull --no-cache \
+  --build-arg BETTERBIRD_VERSION="$(cat VERSION)" \
+  --build-arg BETTERBIRD_SHA256="$(cat BETTERBIRD_SHA256)" \
+  -t "betterbird-vnc:$(cat VERSION)" \
   .
 ```
 
@@ -457,13 +459,7 @@ docker-compose up -d
 
 ### Custom BetterBird Version
 
-Edit `docker-compose.yml`:
-
-```yaml
-build:
-  args:
-    BETTERBIRD_VERSION: 140.4.0esr-bb13
-```
+Run `scripts/update-betterbird.sh` to update the pinned version and official checksum together. For a manual override, both `BETTERBIRD_VERSION` and `BETTERBIRD_SHA256` in `docker-compose.yml` must match the requested Linux en-US archive. Changing only the version intentionally fails checksum verification. Back up your profile before major upgrades; downgrades may not be compatible.
 
 ### Web Browser
 
