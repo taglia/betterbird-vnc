@@ -51,7 +51,7 @@ The GitHub Action runs on:
 3. **Pull requests** - Builds only (no publishing)
 4. **Manual dispatch** - Run manually from Actions tab
 5. **Daily schedule** - Checks stable Betterbird/noVNC/websockify releases at 03:17 UTC
-6. **Weekly schedule** - Rebuilds from fresh Debian packages Sundays at 04:41 UTC
+6. **Weekly schedule** - Rebuilds from fresh Debian packages Saturdays at 00:07 SGT (Fridays 16:07 UTC), ahead of the Saturday-morning container refresh
 
 ## Manual Workflow Dispatch
 
@@ -103,7 +103,7 @@ The workflow includes automatic version checking:
 
 Every build is fresh, including the weekly rebuild when Betterbird has not changed. The exact scanned image is pushed to both registries. Trivy blocks publication on **fixable HIGH/CRITICAL** findings; all HIGH/CRITICAL findings, including those without fixes, are retained in the `vulnerability-report` artifact. A green scan is not a guarantee that an upstream binary is vulnerability-free: monitor Betterbird/Thunderbird security advisories too.
 
-Enable GitHub Actions failure notifications in your account notification settings and monitor failed scheduled runs/blocked update PRs. Upstream security releases may require an immediate manual dispatch rather than waiting for Sunday.
+Enable GitHub Actions failure notifications in your account notification settings and monitor failed scheduled runs/blocked update PRs. Upstream security releases may require an immediate manual dispatch rather than waiting for Saturday.
 
 After a successful publication, cleanup preserves `latest` and three recent Betterbird release tags. Cleanup recursively resolves retained GHCR manifests and protects their platform/attestation children; only unreachable objects and obsolete tags are removed. All pages and retained manifests must be readable before any deletion starts. Registry API failures fail the cleanup job rather than silently claiming success.
 
