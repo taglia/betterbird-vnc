@@ -4,8 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        BETTERBIRD_VERSION: 153.5.0esr-bb11
-        BETTERBIRD_SHA256: 253b1760c9b7a5502a210c90d530f87eebdcae87b7af13af213d50ffb255dc11
+        BETTERBIRD_VERSION: 153.7.0esr-bb13
+        BETTERBIRD_SHA256: 145d07a34fc05bba50a41b2d93bc57692e0690e57e6fd9ca413c2fcb642c3934
         USER_UID: 1000
         USER_GID: 1000
     image: betterbird-vnc:latest
