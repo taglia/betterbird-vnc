@@ -92,8 +92,6 @@ docker run -d \
 Create `docker-compose.yml`:
 
 ```yaml
-version: '3.8'
-
 services:
   betterbird:
     image: tagliasteel/betterbird-vnc:latest
